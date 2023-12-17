@@ -1,0 +1,61 @@
+﻿
+
+<div class="container mt-4">
+    <form id="productForm" method="post" action="/Product/ProductAdd">
+        <div class="mb-3">
+            <label for="Name" class="form-label">*Name:</label>
+            <input type="text" class="form-control" id="Name" name="Name" required />
+            <div id="nameError" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="Price" class="form-label">Price:</label>
+            <input type="number" class="form-control" id="Price" name="Price" step="0.01" />
+            <div id="priceError" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="Stock" class="form-label">*Stock:</label>
+            <input type="number" class="form-control" id="Stock" name="Stock" required />
+            <div id="stockError" class="text-danger"></div>
+        </div>
+        <!-- Category seçimi için bir dropdown (select elementi) -->
+        <div class="mb-3">
+            <label for="CategoryId" class="form-label">Category:</label>
+            <select class="form-control" id="CategoryId" name="CategoryId" required>
+                @foreach (var category in ViewBag.Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
+            <div id="categoryError" class="text-danger"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Product</button>
+    </form>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#productForm').submit(function (e) {
+                e.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/Product/ProductAdd',
+                    data: formData,
+                    success: function (result) {
+                        window.location.href = '/Product/Index';
+                    },
+                    error: function (xhr, status, error) {
+                        var errors = xhr.responseJSON;
+                        $('#nameError').text(errors.Name ? errors.Name[0] : '');
+                        $('#priceError').text(errors.Price ? errors.Price[0] : '');
+                        $('#stockError').text(errors.Stock ? errors.Stock[0] : '');
+                    }
+                });
+            });
+        });
+    </script>
+}

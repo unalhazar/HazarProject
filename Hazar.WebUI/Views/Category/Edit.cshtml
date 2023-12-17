@@ -1,0 +1,52 @@
+﻿
+@model CategoryDTO
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit Category</h2>
+
+<form id="categoryEditForm" asp-action="Edit" method="post">
+    <!-- Gizli alan olarak Id ekleme -->
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group mb-3">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+        <div id="nameError" class="text-danger"></div>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Description"></label>
+        <input asp-for="Description" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger"></span>
+        <div id="DescriptionError" class="text-danger"></div>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</form>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#categoryEditForm').submit(function (e) {
+                e.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/Category/Edit',
+                    data: formData,
+                    success: function (result) {
+                        window.location.href = '/Category/Index';
+                    },
+                    error: function (xhr, status, error) {
+                        var errors = xhr.responseJSON;
+                        $('#nameError').text(errors.Name ? errors.Name[0] : '');
+                        $('#nameDescription').text(errors.Description ? errors.Description[0] : '');
+                    }
+                });
+            });
+        });
+    </script>
+}

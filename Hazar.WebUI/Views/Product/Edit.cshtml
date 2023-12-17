@@ -1,0 +1,78 @@
+﻿
+@model ProductDTO
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit Product</h2>
+
+<form id="producteditForm" asp-action="Edit" method="post">
+    <!-- Gizli alan olarak Id ekleme -->
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group mb-3">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+        <div id="nameError" class="text-danger"></div>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+        <div id="priceError" class="text-danger"></div>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Stock"></label>
+        <input asp-for="Stock" class="form-control" />
+        <span asp-validation-for="Stock" class="text-danger"></span>
+        <div id="stockError" class="text-danger"></div>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="CategoryId"></label>
+        <select asp-for="CategoryId" asp-items="@(new SelectList(ViewBag.Categories, "Id", "Name"))" class="form-control">
+            <option value="">Please select a category</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+        <div id="categoryError" class="text-danger"></div>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</form>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#producteditForm').submit(function (e) {
+                e.preventDefault();
+                // Form verilerini al
+                var formData = $(this).serialize();
+                // Ajax isteği gönder
+                $.ajax({
+                    type: 'POST',
+                    url: '/Product/Edit',
+                    data: formData,
+                    success: function (result) {
+                        // Başarı durumunda işlemleri gerçekleştir
+                        window.location.href = '/Product/Index';
+                    },
+                    error: function (xhr, status, error) {
+                        // Hata durumunda hataları işle
+                        var errors = xhr.responseJSON;
+
+                        // Hata mesajlarını uygun yerlere yerleştir
+                        $('#nameError').text(errors.Name ? errors.Name[0] : '');
+                        $('#priceError').text(errors.Price ? errors.Price[0] : '');
+                        $('#stockError').text(errors.Stock ? errors.Stock[0] : '');
+                        $('#categoryError').text(errors.CategoryId ? errors.CategoryId[0] : '');
+
+                    }
+                });
+            });
+        });
+    </script>
+}

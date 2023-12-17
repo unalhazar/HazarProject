@@ -1,0 +1,46 @@
+﻿<div class="container mt-4">
+    <form id="categoryForm" method="post" action="/Category/CategoryAdd">
+        <div class="mb-3">
+            <label for="Name" class="form-label">*Name:</label>
+            <input type="text" class="form-control" id="Name" name="Name" required />
+            <div id="nameError" class="text-danger"></div>
+        </div>
+        <div class="mb-3">
+            <label for="Description" class="form-label">*Description:</label>
+            <input type="text" class="form-control" id="Description" name="Description" required />
+            <div id="DescriptionError" class="text-danger"></div>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Product</button>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#categoryForm').submit(function (e) {
+            e.preventDefault(); // Normal form gönderimini engelle
+
+            var formData = $(this).serialize(); // Form verilerini serialize et
+
+            $.ajax({
+                type: 'POST',
+                url: '/Category/CategoryAdd', // Sunucu tarafındaki hedef URL
+                data: formData,
+                success: function (result) {
+                    // Başarılı yanıt geldiğinde yapılacak işlem
+                    window.location.href = '/Category/Index'; // Başka bir sayfaya yönlendir
+                },
+                error: function (xhr, status, error) {
+                    // Hata durumunda yapılacak işlem
+                    if (xhr.responseJSON) {
+                        var errors = xhr.responseJSON;
+                        if (errors.Name) {
+                            $('#nameError').text(errors.Name[0]); // Hata mesajını göster
+                            $('#DescriptionError').text(errors.Description[0]); // Hata mesajını göster
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
+

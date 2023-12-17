@@ -1,0 +1,64 @@
+﻿@model IPagedList<ProductDTO>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+
+
+<div class="container mt-3">
+    <a asp-action="ProductAdd" class="btn btn-primary my-3">Add Product</a>
+
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@string.Format("{0:C}", product.Price)</td>
+                    <td>@($"{product.Stock:N0}")</td>
+                    <td>@product.CategoryName</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-info btn-sm">Edit</a>
+                        <a href="#" class="delete-product btn btn-danger btn-sm" data-product-id="@product.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page }))
+
+
+<script src="~/js/jquery-3.6.4.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+<script src="~/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+<script>
+    $(document).ready(function () {
+        $(".delete-product").on("click", function (e) {
+            e.preventDefault();
+            var productId = $(this).data("product-id");
+            $.ajax({
+                type: "POST",
+                url: "/Product/Delete",
+                data: { id: productId },
+                success: function (result) {
+                    window.location.href = result.redirectUrl;
+                },
+                error: function (error) {
+                    console.error("Hata oluştu: " + error.responseText);
+                }
+            });
+        });        
+    });
+</script>
+

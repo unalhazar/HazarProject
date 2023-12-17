@@ -1,0 +1,36 @@
+﻿.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+    .pagination a {
+        color: #007bff;
+        background-color: #fff;
+        border: 1px solid #007bff;
+        margin: 0 5px;
+        padding: 8px 12px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+        .pagination a:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+    .pagination .active a {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
+
+    .pagination .disabled a {
+        color: #ccc;
+        pointer-events: none;
+    }
+
+    /* Optional: Add a subtle box shadow for a lifted effect on hover */
+    .pagination a:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
